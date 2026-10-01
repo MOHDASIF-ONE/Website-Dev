@@ -44,7 +44,9 @@ $env:PORT = "5000"
 go run ./cmd/api
 ```
 
-The Go server listens on port `5000` by default and serves `frontend/dist` when present. Set `PORT`, `DATABASE_URL`, and `CORS_ORIGIN` in the deployment environment. A deployment may host `frontend/` separately (for example, Vercel) and run the Go API on a Go-compatible host.
+The Go server listens on port `5000` by default and serves `frontend/dist` when present. For Vercel, connect the repository with its root as the project root and select the Services framework. The root `vercel.json` builds `backend/` and `frontend/` as separate services, routes `/api/*` to the Go API, and sends all other paths to the Vite app. The frontend calls `/api/v1` on the same domain, so those requests follow the public API rewrite.
+
+Set `DATABASE_URL` to a persistent PostgreSQL database in Vercel's project environment before deploying. The SQLite fallback is for local development and is not suitable for durable production data. Set `CORS_ORIGIN` only if the browser frontend uses a different origin; same-domain Vercel routing does not need it. Run `vercel dev` from the repository root to develop the services together.
 
 ## Database changes
 
